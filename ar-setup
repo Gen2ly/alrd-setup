@@ -1,0 +1,81 @@
+#!/usr/bin/bash
+# Initial Linux setup (Keyboard layout, time and date).
+
+# Root access required
+if [ "$EUID" != 0 ]; then
+  echo "Root access required"
+  exit 1; fi
+
+# Keyboard layout
+keymapcur=$(localectl status | grep -o "VC.*$" | cut -d " " -f3)
+PS3="Keyboard layout to use ("$keymapcur"): "
+select keymap in $(localectl list-keymaps); do
+    test -n "$keymap" && break
+    echo "Select 1, 2..."
+  done
+if [ "$keymap" != "$keymapcur" ]; then
+  localectl set-keymap --no-convert "$keymap"
+  echo "Keyboard layout set: "$keymap"";fi
+
+# RTC time standard define
+if grep -sq Local /etc/adjtime; then    # system time standard obtain
+  STS=Local; else
+  STS=UTC  ; fi
+while true; do
+  read -p "RTC time standard is UTC or Local? ("$STS") ["$STS"]: " HTS
+  [ "$HTS" = "" ] && HTS=$STS
+  case $HTS in
+    UTC|utc   ) if [ "$HTS" != "$STS" ]; then
+                  timedatectl set-local-rtc 0
+                  echo "RTC time standard set: "$HTS""
+                fi
+                break ;;
+    [L,l]ocal ) if [ "$HTS" != "$STS" ]; then
+                  timedatectl set-local-rtc 1
+                  echo "RTC time standard set: "$HTS""
+                fi
+                break ;;
+    * )         echo "Answer UTC or Local." ;;
+  esac; done
+
+# Time zone
+while true; do
+  timezone=$(timedatectl status | grep -o "Time zone.*$" | awk '{print $3}')
+  read -p "Time zone correct? ("$timezone") [y]: " yn
+  [ -z "$yn" ] && yn=y
+  case $yn in
+    [Yy]es|Y|y )  break ;;
+    [Nn]o|N|n  )  PS3="Time zone to use ($timezone): "
+                  select timezone in $(timedatectl list-timezones); do
+                    test -n "$timezone"; done
+                  timedatectl set-timezone "$timezone"
+                  echo "Time zone set."
+                  break ;;
+    *          )  echo "Answer yes, or no." ;;
+  esac; done
+
+# Time and date
+while true; do
+  export timedate="$(timedatectl | head -n1 | sed 's/^.*Local time: //')"
+  read -p "Local time correct? ($(printf '%s' "$timedate")) [y]: " yn
+  [ -z "$yn" ] && yn=y
+  case $yn in
+    [Yy]es|Y|y )  break                     ;;
+    [Nn]o|N|n  )  timeoff=yes && break      ;;
+    *          )  echo "Answer yes, or no." ; esac; done
+
+# Time set
+if [ "$timeoff" ]; then
+  while true; do
+    read -p "Time set? (Manual/NTP/No) [Manual]: " timesettype
+    [ -z "$timesettype" ] && timesettype=Manual
+    case $timesettype in
+      [Mm]anual ) read -p "Time enter (YYYY-MM-DD hh:mm:ss): " timemanual
+                  timedatectl set-time "$timemanual" && break ;;
+      NTP|ntp   ) if curl -Is https://www.archlinux.org -o /tmp/url-head; then
+                    ntpd -q && echo "Time set by NTP."
+                  else
+                    echo "Time set by NTP requires network connection."; fi
+                  break ;;
+      *         ) break ;;
+    esac; done; fi
