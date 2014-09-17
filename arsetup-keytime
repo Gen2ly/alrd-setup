@@ -17,6 +17,9 @@ if [ "$keymap" != "$keymapcur" ]; then
   localectl set-keymap --no-convert "$keymap"
   echo "Keyboard layout set: "$keymap"";fi
 
+# Locale, time zone, password
+systemd-firstboot --prompt-locale --prompt-timezone --prompt-root-password
+
 # RTC time standard define
 if grep -sq Local /etc/adjtime; then    # system time standard obtain
   STS=Local; else
