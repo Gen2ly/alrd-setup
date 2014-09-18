@@ -1,5 +1,15 @@
 #!/usr/bin/bash
-# Initial Linux setup (Keyboard layout, time and date).
+# Live medium basic configuration setup
+
+# Firstboot test (make sure to only run once automatically)
+ranfile=/tmp/"${0##*/}".hasrun
+if [ "$1" = "--firstboot" -a -f "$ranfile" ]; then
+  exit 1; fi
+
+# Help
+if [ "$1" = "-h" -o "$1" = "--help" -o $# -gt 1 ]; then
+  echo ""${0##*/}" - setup a live mediums basic settings"
+  exit 1; fi 
 
 # Root access required
 if [ "$EUID" != 0 ]; then
@@ -15,7 +25,7 @@ select keymap in $(localectl list-keymaps); do
   done
 if [ "$keymap" != "$keymapcur" ]; then
   localectl set-keymap --no-convert "$keymap"
-  echo "Keyboard layout set: "$keymap"";fi
+  echo "Keyboard layout set: "$keymap""; fi
 
 # Locale, time zone, password
 systemd-firstboot --prompt-locale --prompt-timezone --prompt-root-password
@@ -42,20 +52,20 @@ while true; do
   esac; done
 
 # Time zone
-while true; do
-  timezone=$(timedatectl status | grep -o "Time zone.*$" | awk '{print $3}')
-  read -p "Time zone correct? ("$timezone") [y]: " yn
-  [ -z "$yn" ] && yn=y
-  case $yn in
-    [Yy]es|Y|y )  break ;;
-    [Nn]o|N|n  )  PS3="Time zone to use ($timezone): "
-                  select timezone in $(timedatectl list-timezones); do
-                    test -n "$timezone"; done
-                  timedatectl set-timezone "$timezone"
-                  echo "Time zone set."
-                  break ;;
-    *          )  echo "Answer yes, or no." ;;
-  esac; done
+#while true; do
+#  timezone=$(timedatectl status | grep -o "Time zone.*$" | awk '{print $3}')
+#  read -p "Time zone correct? ("$timezone") [y]: " yn
+#  [ -z "$yn" ] && yn=y
+#  case $yn in
+#    [Yy]es|Y|y )  break ;;
+#    [Nn]o|N|n  )  PS3="Time zone to use ($timezone): "
+#                  select timezone in $(timedatectl list-timezones); do
+#                    test -n "$timezone"; done
+#                  timedatectl set-timezone "$timezone"
+#                  echo "Time zone set."
+#                  break ;;
+#    *          )  echo "Answer yes, or no." ;;
+#  esac; done
 
 # Time and date
 while true; do
@@ -82,3 +92,18 @@ if [ "$timeoff" ]; then
                   break ;;
       *         ) break ;;
     esac; done; fi
+
+# Finishup: MOTD generate, clear, hasrun file generate
+if [ "$1" = "--firstboot" ]; then
+  if ! [ -s "/etc/motd" ]; then
+echo "Arch Rescue 0.86 - Restaurant at the End of the Universe
+  • arsetup - live medium basic configuration setup (run at first login).
+  • armrr   - pacman mirrorlist generator downloader (ranked mirrors).
+  • ardoc   - about the live medium and general install notes." >| /etc/motd
+  fi
+  clear && cat /etc/motd
+  # Ran file 
+  touch "$ranfile"
+fi
+
+# vim:set syn=sh ts=2 sw=2 et:

@@ -1,7 +1,7 @@
 ### Description
 
-A couple initial setups that may be necessary for the install process (keyboard layout, and time and date).  This script is designed for setting up a Live medium and requires systemd.
+A live medium basic configuration setup script and requires systemd.  The script is to run on login to setup: **keyboard layout**, **locale**, **time zone**, **password**, and the **time**.
 
 ### Usage
 
-Run `arsetup-keytime` to begin.
+The script is designed to run on login or run `arsetup` manually.
