@@ -51,22 +51,6 @@ while true; do
     * )         echo "Answer UTC or Local." ;;
   esac; done
 
-# Time zone
-#while true; do
-#  timezone=$(timedatectl status | grep -o "Time zone.*$" | awk '{print $3}')
-#  read -p "Time zone correct? ("$timezone") [y]: " yn
-#  [ -z "$yn" ] && yn=y
-#  case $yn in
-#    [Yy]es|Y|y )  break ;;
-#    [Nn]o|N|n  )  PS3="Time zone to use ($timezone): "
-#                  select timezone in $(timedatectl list-timezones); do
-#                    test -n "$timezone"; done
-#                  timedatectl set-timezone "$timezone"
-#                  echo "Time zone set."
-#                  break ;;
-#    *          )  echo "Answer yes, or no." ;;
-#  esac; done
-
 # Time and date
 while true; do
   export timedate="$(timedatectl | head -n1 | sed 's/^.*Local time: //')"
@@ -93,13 +77,15 @@ if [ "$timeoff" ]; then
       *         ) break ;;
     esac; done; fi
 
-# Finishup: MOTD generate, clear, hasrun file generate
+# Finish-up: MOTD, clear, hasrun file generate
 if [ "$1" = "--firstboot" ]; then
   if ! [ -s "/etc/motd" ]; then
+
 echo "Arch Rescue 0.86 - Restaurant at the End of the Universe
   • arsetup - live medium basic configuration setup (run at first login).
   • armrr   - pacman mirrorlist generator downloader (ranked mirrors).
   • ardoc   - about the live medium and general install notes." >| /etc/motd
+
   fi
   clear && cat /etc/motd
   # Ran file 

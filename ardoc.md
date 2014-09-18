@@ -8,19 +8,26 @@ Arch Rescue is a rescue/install medium.  It is designed for basic rescue operati
 
 Arch Rescue includes a fairly well-configured `bashrc` and `vimrc` and a few additional utilities, including:
 
-* arpa
+* hwinfo
+* gptfdisk
+* grub
 * hwinfo
 * iotop
-* irssi
+* irsii
+* links
 * nmap
-* packer
+* openssh
 * partclone
+* parted
 * partimage
 * rsync
+* smartmontools
 * testdisk
 * tmux
 * tree
 * wgetpaste
+
+Also the AUR installer `packer` is included and a general pacman wrapper called `arpa`.
 
 ## Setup
 
