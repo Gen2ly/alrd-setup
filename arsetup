@@ -1,13 +1,8 @@
 #!/usr/bin/bash
 # Live medium basic configuration setup
 
-# Firstboot test (make sure to only run once automatically)
-ranfile=/tmp/"${0##*/}".hasrun
-if [ "$1" = "--firstboot" -a -f "$ranfile" ]; then
-  exit 1; fi
-
 # Help
-if [ "$1" = "-h" -o "$1" = "--help" -o $# -gt 1 ]; then
+if [ $# -gt 0 ]; then
   echo ""${0##*/}" - setup a live mediums basic settings"
   exit 1; fi 
 
