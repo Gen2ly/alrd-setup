@@ -8,7 +8,6 @@ Arch Rescue is a rescue/install medium.  It is designed for basic rescue operati
 
 Arch Rescue includes a fairly well-configured `bashrc` and `vimrc` and a few additional utilities, including:
 
-* hwinfo
 * gptfdisk
 * grub
 * hwinfo

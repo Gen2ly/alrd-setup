@@ -1,6 +1,6 @@
 ### Description
 
-`arsetup` is Linux, live medium, basic configuration, setup script; it requires systemd.  The script is run on login and performs interactive setup of: **keyboard layout**, **locale**, **time zone**, **password**, and the **time**.
+`arsetup` is Linux, live medium, basic configuration, setup script; it requires systemd.  The script is run on first login and performs interactive setup of: **keyboard layout**, **locale**, **time zone**, **password**, and the **time**.
 
 ### Usage
 
