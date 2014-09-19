@@ -3,7 +3,7 @@
 
 # Help
 if [ $# -gt 0 ]; then
-  echo ""${0##*/}" - setup a live mediums basic settings"
+  echo ""${0##*/}" - a live medium, basic configuration, setup script"
   exit 1; fi 
 
 # Root access required
