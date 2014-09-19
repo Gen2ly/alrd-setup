@@ -2,7 +2,7 @@
 # arsetup first login run
 
 # arsetup run if no lock
-lock=/tmp/$(basename ${0}).lock
+lock=/tmp/${0##*/}.lock
 [ -f ${lock} ] && exit 1
 arsetup && touch ${lock}
 
