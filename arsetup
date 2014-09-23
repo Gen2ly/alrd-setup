@@ -7,9 +7,9 @@ if [ $# -gt 0 ]; then
   exit 1; fi 
 
 # Root access required
-if [ "$EUID" != 0 ]; then
-  echo "Root access required"
-  exit 1; fi
+#if [ "$EUID" != 0 ]; then
+#  echo "Root access required"
+#  exit 1; fi
 
 # Keyboard layout
 keymapcur=$(localectl status | grep -o "VC.*$" | cut -d " " -f3)
@@ -27,16 +27,18 @@ localecur=$(locale | head -n1 | cut -d = -f 2)
 PS3="Locale to use ("$localecur"): "
 OLDIFS="$IFS"
 IFS=$'\n'
-select locale in $(grep -o ^#[a-z].*$ /etc/locale.gen | sed 's/^#//'); do
-    test -n "$locale" && break
-    echo "Select 1, 2..."
+select locale in $(grep -o -P ^#?[a-z].*$ /etc/locale.gen | sed 's/^#//'); do
+  test -n "$locale" && break
+  echo "Select 1, 2..."
 done
 IFS="$OLDIFS"
-sed -i "s/^#${locale}/${locale}/" /etc/locale.gen
-locale-gen
-_LANG=$(echo "$locale" | cut -d " " -f 1)
-echo ${_LANG} > /etc/locale.conf
-export LANG=${_LANG}
+if [ ${locale%% *} != "$localecur" ]; then
+  sed -i "s/^#${locale}/${locale}/" /etc/locale.gen
+  locale-gen
+  _LANG=$(echo "$locale" | cut -d " " -f 1)
+  echo ${_LANG} > /etc/locale.conf
+  export LANG=${_LANG}
+fi
 
 # RTC time standard define
 if grep -sq Local /etc/adjtime; then    # system time standard obtain
@@ -68,7 +70,8 @@ while true; do
     [Yy]es|Y|y )  break ;;
     [Nn]o|N|n  )  PS3="Time zone to use ($timezone): "
                   select timezone in $(timedatectl list-timezones); do
-                    test -n "$timezone"; done
+                    test -n "$timezone" && break
+                    echo "Select 1, 2..." ; done
                   timedatectl set-timezone "$timezone"
                   echo "Time zone set."
                   break ;;

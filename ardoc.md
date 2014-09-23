@@ -8,6 +8,7 @@ Arch Rescue is a rescue/install medium.  It is designed for basic rescue operati
 
 Arch Rescue includes a fairly well-configured `bashrc` and `vimrc` and a few additional utilities, including:
 
+* arpa
 * gptfdisk
 * grub
 * hwinfo
@@ -19,6 +20,7 @@ Arch Rescue includes a fairly well-configured `bashrc` and `vimrc` and a few add
 * partclone
 * parted
 * partimage
+* rback
 * rsync
 * smartmontools
 * testdisk
@@ -26,13 +28,11 @@ Arch Rescue includes a fairly well-configured `bashrc` and `vimrc` and a few add
 * tree
 * wgetpaste
 
-Also the AUR installer `packer` is included and a general pacman wrapper called `arpa`.
-
 ## Setup
 
-The live medium is helped with some additional environmental setup.  The script `arsetup` is run on first login, and can be run manually.  It sets: **keyboard layout**, **locale**, **time zone**, **password**, and the **time**.  For selections that scroll past the viewable area use **Ctrl** + **PgUp/Dn**.  Entries labeled with parenthesis are the `(detected)` values and entries with brackets will be the **Enter** to set `[default]` value.
+The live medium is helped with some additional environmental setup.  The script `arsetup` is useful to run on first login; it sets: **keyboard layout**, **locale**, **time zone**, **time**, and the **password**.  When using `arsetup` for selections that scroll past the viewable area use **Ctrl** + **PgUp/Dn** to read them.  Entries labeled with parenthesis are the `(detected)` values and entries with brackets will be the `[default]` value, press `Enter` to use.
 
-If using a wide screen display, think about using `tmux`.  `tmux` is a console splitter.  It can divide the screen into two console sessions (useful, e.g., for reading content on one side and performing actions on another).  Type `tmux` to begin then `Ctrl` + `b` to get to command reception.  In command reception type `%` to split the console vertically; after that type `;` to switch between panes.
+If using a wide screen display, think about using `tmux`.  `tmux` is a console splitter.  It can divide the screen into two (or more) console sessions (useful, e.g., when reading content on one side and performing actions on another).  Type `tmux` to begin then `Ctrl` + `b` to get to command reception.  In command reception type `%` to split the console vertically; after that type `;` to switch between panes.
 
 The SSH daemon is not started by default for security reasons.  To start run: `systemctl start sshd.service`.  Before starting the service consider adding `ListenAddress 192.168.1.0/24` to `/etc/ssh/sshd_config` or the appropriate local network address to limit connections if only using a local network.
 
@@ -46,14 +46,15 @@ Run `armrr` to download a ranked, mirror list for your region.  This will help d
 
 ### Installation
 
-Install directly with pacman:
+Install `base` directly with pacman:
 
+    mount --bind   /dev      ${bldddir}/dev/
+    mount --bind   /dev/pts/ ${bldddir}/dev/pts/
+    mount -t proc  proc      ${bldddir}/proc/
     pacman --root /mnt/arch/ --config /etc/pacman.conf -Sy base *base-devel
+    umount --recursive ${bldddir}/{dev,proc}
 
 Chroot:
 
     systemd-nspawn --capability=CAP_MKNOD --register=no -M ${HOSTNAME}(chroot) -D /mnt/arch/
 
-Easy setup of **locale**, **time zone**, **hostname**, and **root password**:
-
-    systemd-firstboot --prompt
