@@ -1,0 +1,6 @@
+#!/usr/bin/bash
+# Arch Rescue documentation open with editor.
+
+vim /usr/share/doc/archrescue-setup/alrd-doc.md
+
+# vim:set syn=sh ts=2 sw=2 et:

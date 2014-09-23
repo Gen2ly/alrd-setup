@@ -30,7 +30,7 @@ Arch Rescue includes a fairly well-configured `bashrc` and `vimrc` and a few add
 
 ## Setup
 
-The live medium is helped with some additional environmental setup.  The script `arsetup` is useful to run on first login; it sets: **keyboard layout**, **locale**, **time zone**, **time**, and the **password**.  When using `arsetup` for selections that scroll past the viewable area use **Ctrl** + **PgUp/Dn** to read them.  Entries labeled with parenthesis are the `(detected)` values and entries with brackets will be the `[default]` value, press `Enter` to use.
+The live medium is helped with some additional environmental setup.  The script `alrd-setup` is useful to run on first login; it sets: **keyboard layout**, **locale**, **time zone**, **time**, and the **password**.  When using `alrd-setup` for selections that scroll past the viewable area use **Ctrl** + **PgUp/Dn** to read them.  Entries labeled with parenthesis are the `(detected)` values and entries with brackets will be the `[default]` value, press `Enter` to use.
 
 If using a wide screen display, think about using `tmux`.  `tmux` is a console splitter.  It can divide the screen into two (or more) console sessions (useful, e.g., when reading content on one side and performing actions on another).  Type `tmux` to begin then `Ctrl` + `b` to get to command reception.  In command reception type `%` to split the console vertically; after that type `;` to switch between panes.
 
