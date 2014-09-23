@@ -48,6 +48,12 @@ Run `armrr` to download a ranked, mirror list for your region.  This will help d
 
 Install `base` directly with pacman:
 
+    haveged -w 1024
+    pacman-key --init; pacman-key --populate archlinux
+    pkill haveged
+
+    armrr                        # pacman mirrorlist generator download
+
     mount --bind   /dev      ${bldddir}/dev/
     mount --bind   /dev/pts/ ${bldddir}/dev/pts/
     mount -t proc  proc      ${bldddir}/proc/
