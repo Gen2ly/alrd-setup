@@ -8,9 +8,10 @@ fi
 
 clear 
 
-echo \
+cat << EoF
 "Arch Linux Rescue Disk
   • alrd-setup - a live medium, basic configuration, setup script (recommended).
   • alrd-doc   - documentation of the live medium and general install notes."
+EoF
 
 eject
