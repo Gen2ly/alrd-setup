@@ -36,7 +36,7 @@ if [ ${locale%% *} != "$localecur" ]; then
   sed -i "s/^#${locale}/${locale}/" /etc/locale.gen
   locale-gen
   _LANG=$(echo "$locale" | cut -d " " -f 1)
-  echo ${_LANG} > /etc/locale.conf
+  echo -e "${_LANG}\nLC_COLLATE=C" > /etc/locale.conf
   export LANG=${_LANG}
 fi
 
